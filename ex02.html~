@@ -1,0 +1,103 @@
+
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Operating Systems. Exercises.</title>
+    <link rel="stylesheet" href="../../style.css" type="text/css">
+    <link rel="stylesheet" href="../../prettify/prettify.css" type="text/css">
+    <script type="text/javascript" src="../../prettify/prettify.js"></script>
+  </head>
+
+  <body onload="prettyPrint()">
+    <p>
+      <span class="Title">Operating Systems. Exercise 02</span>
+    </p>
+    <div class="ParentBox">
+      
+      <p>
+	<span class="Chapter">I. Task 1: write a "shell" program</span>
+	<br>Please add some lines to the <a href="myshell_template.c">template</a> program to implement "shell" function. For example, you can use the program to (1) list the files in the current directory; (2) create and add some contents in a new file; (3) show the contents of this file, as follows.
+      </p>
+
+      <p>
+	
+<pre class="prettyprint_sample lang-c"><code>
+bash-4.2$ ./myshell
+
+Shell -> ls
+
+myshell  myshell.c
+Shell -> emacs helloworld
+
+Shell -> ls
+
+myshell  myshll.c helloworld
+Shell -> cat helloworld
+
+This is my hello world!
+</code></pre>
+
+
+
+<span class="Exercise">Hint: How to use "execvp()"</span>
+<br> The program reads input commands, and executes them using function of "execvp", which belongs to the "exec" family of functions.
+
+	<pre class="prettyprint_sample lang-c"><code>
+#include &lt;unistd.h&gt;
+int execl(const char *path, const char *arg, ...); 
+int execlp(const char *file, const char *arg, ...); 
+int execv(const char *path, char *const argv[]); 
+int execvp(const char *file, char *const argv[]); 
+int execvpe(const char *file, char *const argv[],  
+	</code></pre>
+      <br> More information about "exec" family of functions can be found at http://linux.die.net/man/3/exec. An example of how to use "exec" is shown as follows. 
+<p>Example</p>
+<pre class="prettyprint_sample lang-c"><code>
+  #include &lt;unistd.h&gt;
+  #include &lt;stdio.h&gt;
+  #include &lt;stdlib.h&gt;
+  #include &lt;string.h&gt;
+
+  main()
+  {
+     pid_t pid;
+     char *pathvar;
+     char newpath[1000];
+
+     pathvar = getenv("PATH");
+     strcpy(newpath, pathvar);
+     strcat(newpath, ":u/userid/bin");
+     setenv("PATH", newpath);
+
+     if ((pid = fork()) == -1)
+        perror("fork error");
+     else if (pid == 0) {
+        execlp("newShell", "newShell", NULL);
+        printf("Return not expected. Must be an execlp error.n");
+     }
+  }
+	</code></pre>
+
+
+      
+
+
+      <p>
+
+
+      <p><span class="Chapter">II. Task 2: File operations using system calls</span></p>
+
+      <p>Please add some lines to the <a href="file_template.c">template</a> program to implement file operations. This program will create a new file, and write a sentence into the file. 
+</p>
+
+      
+<p><span class="Exercise">Hint</span></p>
+<br> The following functions can be used to implement file operations. More details about these functions can be found at http://linux.die.net/man/2/open.
+<pre class="prettyprint_sample lang-c"><code>
+int open(const char *pathname, int flags);
+int open(const char *pathname, int flags, mode_t mode); 
+ssize_t write(int fd, const void *buf, size_t count); 
+off_t lseek(int fd, off_t offset, int whence); 
+</code></pre>
+  </body>
+</html>
